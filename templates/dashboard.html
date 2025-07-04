@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PDF Creator - Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-left">
+      <a href="" class="logo">MERGE PDFs</a>
+    </div>
+
+    <div class="navbar-center">
+      <img src="{{ url_for('static', filename='pdf_image.png') }}" alt="PDF Icon" class="nav-icon">
+      <span class="nav-text">Merge | Split | Organize</span>
+    </div>
+  <a class="button_1" href="/logout">Logout</a>
+</nav>
+  <div class="home-content">
+    <h1>Welcome, {{ username }}!</h1>
+
+
+    <div class="features">
+  <div class="feature-box" onclick="window.location.href='/merge'">
+    <h2>Merge PDF</h2>
+    <p>Combine multiple PDF files into one.</p>
+  </div>
+  <div class="feature-box" onclick="window.location.href='/split'">
+    <h2>Split PDF</h2>
+    <p>Separate your PDFs into individual pages.</p>
+  </div>
+  <div class="feature-box" onclick="window.location.href='/organize'">
+    <h2>Organize Files</h2>
+    <p>Reorder, rotate, or remove PDF pages.</p>
+  </div>
+</div>
+
+  </div>
+
+</body>
+</html>

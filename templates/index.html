@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flask Login Popup with Navbar</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+  
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-left">
+      <a href="" class="logo">MERGE PDFs</a>
+    </div>
+
+    <div class="navbar-center">
+      <img src="{{ url_for('static', filename='pdf_image.png') }}" alt="PDF Icon" class="nav-icon">
+      <span class="nav-text">Merge | Split | Organize</span>
+    </div>
+  <button id="openLogin">Open Login</button>
+</nav>
+
+<div class="content">
+  <h1>Welcome</h1>
+</div>
+
+<div class="overlay" id="popupOverlay">
+  <div class="popup" id="popupBox">
+    <!-- Login/Register forms will be loaded here by JS -->
+  </div>
+</div>
+
+<script>
+  const overlay = document.getElementById('popupOverlay');
+  const popup = document.getElementById('popupBox');
+  const openLoginBtn = document.getElementById('openLogin');
+
+  function showPopup() {
+    overlay.style.display = 'flex';
+    loadLoginForm();
+  }
+
+  function hidePopup() {
+    overlay.style.display = 'none';
+  }
+
+  openLoginBtn.addEventListener('click', showPopup);
+
+  // Close when clicking outside popup
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      hidePopup();
+    }
+  });
+
+  // Load login form
+  function loadLoginForm() {
+    popup.innerHTML = `
+      <h2>Login</h2>
+      <input type="text" id="username" placeholder="Username" autocomplete="off" />
+      <input type="password" id="password" placeholder="Password" autocomplete="off" />
+      <button id="loginBtn">Login</button>
+      <div class="register-msg">
+        Don't have an account? <span id="registerLink">Register</span>
+      </div>
+      <div class="message" id="message"></div>
+    `;
+
+    document.getElementById('registerLink').addEventListener('click', loadRegisterForm);
+    document.getElementById('loginBtn').addEventListener('click', doLogin);
+  }
+
+  // Load register form
+  function loadRegisterForm() {
+    popup.innerHTML = `
+      <h2>Register</h2>
+      <input type="text" id="regUsername" placeholder="Choose username" autocomplete="off" />
+      <input type="password" id="regPassword" placeholder="Choose password" autocomplete="off" />
+      <input type="password" id="regPasswordConfirm" placeholder="Confirm password" autocomplete="off" />
+      <button id="registerBtn">Register</button>
+      <div class="register-msg" style="margin-top: 12px; font-size: 14px;">
+        Already have an account? <span id="backToLogin">Login</span>
+      </div>
+      <div class="message" id="message"></div>
+    `;
+
+    document.getElementById('backToLogin').addEventListener('click', loadLoginForm);
+    document.getElementById('registerBtn').addEventListener('click', doRegister);
+  }
+
+  //Perform login by sending data to backend//
+  function doLogin() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const messageDiv = document.getElementById('message');
+
+    fetch('/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username, password})
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+  // Redirect to dashboard page after successful login
+  window.location.href = "/dashboard";
+} else {
+      // Show error message on failure
+      messageDiv.textContent = data.message;
+      messageDiv.className = 'message error';
+    }
+  })
+  .catch(() => {
+    messageDiv.textContent = "Server error, try again later.";
+    messageDiv.className = 'message error';
+  });
+}
+
+  // Perform registration by sending data to backend
+  function doRegister() {
+    const username = document.getElementById('regUsername').value.trim();
+    const password = document.getElementById('regPassword').value.trim();
+    const password_confirm = document.getElementById('regPasswordConfirm').value.trim();
+    const messageDiv = document.getElementById('message');
+
+    fetch('/register', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username, password, password_confirm})
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        messageDiv.textContent = data.message;
+        messageDiv.className = 'message success';
+        setTimeout(loadLoginForm, 1500);
+      } else {
+        messageDiv.textContent = data.message;
+        messageDiv.className = 'message error';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "admin": {
+    "password": "admin123",
+    "role": "admin"
+  },
+  "CV.DAY.SHIFT": {
+    "password": "BSKcv1!",
+    "role": "user"
+  }
+}
